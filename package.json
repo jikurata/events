@@ -1,0 +1,22 @@
+{
+  "name": "@jikurata/events",
+  "version": "1.0.0",
+  "description": "Lightweight event listening module",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest --config jest-config.json"
+  },
+  "keywords": [
+    "event",
+    "listen",
+    "javascript"
+  ],
+  "author": "jikurata",
+  "license": "ISC",
+  "dependencies": {
+    "uuid": "^3.3.2"
+  },
+  "devDependencies": {
+    "jest": "^23.6.0"
+  }
+}

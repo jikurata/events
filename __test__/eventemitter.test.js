@@ -1,5 +1,5 @@
 'use strict';
-const EventEmitter = require('../EventEmitter.js');
+const EventEmitter = require('../index.js');
 
 describe('Registers an Event object', () => {
   test('Registers an event named "test" in the events map', () => {
@@ -8,20 +8,24 @@ describe('Registers an Event object', () => {
     expect(Object.keys(emitter.events)).toContain('test');
     expect(emitter.events['test'].constructor.name).toBe('Event');
   });
-  test('Throws error if eventName is blank', () => {
+  test('Does not register an event if eventName is blank', () => {
     const emitter = new EventEmitter();
-    expect(emitter.register()).toThrow();
+    emitter.register();
+    expect(Object.keys(emitter.events).length).toBe(0);
   });
-  test('Throws error if eventName is null', () => {
+  test('Does not register an event if eventName is null', () => {
     const emitter = new EventEmitter();
-    expect(emitter.register(null)).toThrow();
+    emitter.register(null);
+    expect(Object.keys(emitter.events).length).toBe(0);
   });
-  test('Throws error if eventName is " "', () => {
+  test('Does not register an event if eventName is " "', () => {
     const emitter = new EventEmitter();
-    expect(emitter.register(" ")).toThrow();
+    emitter.register(' ');
+    expect(Object.keys(emitter.events).length).toBe(0);
   });
-  test('Throws error if eventName is 42', () => {
+  test('Does not register an event if eventName is a Number', () => {
     const emitter = new EventEmitter();
-    expect(emitter.register(42)).toThrow();
+    emitter.register(42);
+    expect(Object.keys(emitter.events).length).toBe(0);
   });
 });

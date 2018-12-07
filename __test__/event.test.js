@@ -10,21 +10,21 @@ describe('Registers a function handler in the event object', () => {
     const id = event.registerHandler(handler);
     expect(typeof event.handlers[id]).toBe('function');
   });
-  test('Throws error if handler arg is empty', () => {
+  test('Return null if handler arg is empty', () => {
     const event = new Event('test');
-    expect(event.registerHandler()).toThrow();
+    expect(event.registerHandler()).toBe(null);
   });
-  test('Throws error if handler is 42', () => {
+  test('Return null if handler is 42', () => {
     const event = new Event('test');
-    expect(event.registerHandler(42)).toThrow();
+    expect(event.registerHandler(42)).toBe(null);
   });
-  test('Throws error if handler is " "', () => {
+  test('Return null if handler is " "', () => {
     const event = new Event('test');
-    expect(event.registerHandler(' ')).toThrow();
+    expect(event.registerHandler(' ')).toBe(null);
   });
-  test('Throws error if handler is null', () => {
+  test('Return null if handler is null', () => {
     const event = new Event('test');
-    expect(event.registerHandler(null)).toThrow();
+    expect(event.registerHandler(null)).toBe(null);
   });
 });
 describe('Removes an existing event handler from the event object', () => {

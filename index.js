@@ -21,9 +21,10 @@ class EventEmitter {
    * @param {String} eventName 
    * @param {Function} handler 
    */
-  addEventListener(eventName, handler) {
+  addEventListener(eventName, handler, options = {once: false}) {
+    const isOnce = (options.hasOwnProperty('once')) ? options.once : false;
     if ( !this.hasEvent(eventName) ) this.register(eventName);
-    return this.events[eventName].registerHandler(handler);
+    return this.events[eventName].registerHandler(handler, isOnce);
   }
 
   /**
@@ -33,6 +34,15 @@ class EventEmitter {
    */
   on(eventName, handler) {
     return this.addEventListener(eventName, handler);
+  }
+
+  /**
+   * Wrapper for addEventListener with once option enabled
+   * @param {String} eventName 
+   * @param {Function} handler 
+   */
+  once(eventName, handler) {
+    return this.addEventListener(eventName, handler, {once: true});
   }
 
   /**

@@ -8,7 +8,7 @@ describe('Registers a function handler in the event object', () => {
       return true;
     };
     const id = event.registerHandler(handler);
-    expect(typeof event.handlers[id]).toBe('function');
+    expect(typeof event.handlers[id].handler).toBe('function');
   });
   test('Return null if handler arg is empty', () => {
     const event = new Event('test');

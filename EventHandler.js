@@ -8,15 +8,11 @@ class EventHandler {
   }
 
   run() {
-    return this.handler();
+    return this._handler();
   }
 
   get id() {
     return this._id;
-  }
-  
-  get handler() {
-    return this._handler;
   }
 
   get isOnce() {

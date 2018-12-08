@@ -9,10 +9,10 @@ class Event {
   }
 
   runHandlers() {
-    Object.keys(this.handlers).forEach(id => {
+    for ( let id of Object.keys(this.handlers) ) {
       this.handlers[id].run();
       if ( this.handlers[id].isOnce ) delete this.handlers[id];
-    });
+    }
   }
 
   /**

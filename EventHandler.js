@@ -7,12 +7,16 @@ class EventHandler {
     this._isOnce = isOnce;
   }
 
-  run() {
-    return this._handler();
+  run(...args) {
+    return this.handler(...args);
   }
 
   get id() {
     return this._id;
+  }
+
+  get handler() {
+    return this._handler;
   }
 
   get isOnce() {

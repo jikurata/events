@@ -8,10 +8,10 @@ class Event {
     this._handlers = {};
   }
 
-  runHandlers() {
+  runHandlers(...args) {
     for ( let id of Object.keys(this.handlers) ) {
-      this.handlers[id].run();
-      if ( this.handlers[id].isOnce ) delete this.handlers[id];
+      this.handlers[id].run(...args);
+      if ( this.handlers[id].isOnce ) this.removeHandler(id);
     }
   }
 

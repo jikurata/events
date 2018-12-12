@@ -49,17 +49,22 @@ class EventEmitter {
    * Trigger an event
    * @param {String} eventName 
    */
-  dispatchEvent(eventName) {
+  dispatchEvent(eventName, ...args) {
     if ( !this.hasEvent(eventName) ) this.register(eventName);
-    this.events[eventName].runHandlers();
+    this.events[eventName].runHandlers(...args);
   }
 
   /**
    * Wrapper for dispatchEvent
    * @param {String} eventName 
    */
-  emit(eventName) {
-    this.dispatchEvent(eventName);
+  emit(eventName, ...args) {
+    this.dispatchEvent(eventName, ...args);
+  }
+
+  removeEventListener(eventName, id) {
+    if ( !this.hasEvent(eventName) ) return;
+    this.events[eventName].removeHandler(id);
   }
 
   hasEvent(eventName) {

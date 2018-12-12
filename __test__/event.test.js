@@ -34,8 +34,8 @@ describe('Removes an existing event handler from the event object', () => {
       return true;
     };
     const id = event.registerHandler(handler);
-    event.removeHandler(id);
-    expect(Object.keys(event.handlers).length).toBe(0);
+    const removedHandler = event.removeHandler(id);
+    expect(typeof removedHandler).toBe('function');
   });
 });
 describe('Runs all registered handlers when event is emitted', () => {

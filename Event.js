@@ -34,7 +34,7 @@ class Event {
    */
   removeHandler(id) {
     if ( !this.handlers.hasOwnProperty(id) ) return;
-    const handler = this.handlers[id];
+    const handler = this.handlers[id].handler;
     delete this.handlers[id];
     return handler;
   }

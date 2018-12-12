@@ -1,5 +1,4 @@
 'use strict';
-const uuid = require('uuid/v1');
 const EventHandler = require('./EventHandler.js');
 
 class Event {
@@ -16,18 +15,21 @@ class Event {
   }
 
   /**
-   * returns a generated id for the handler
+   * Creates an instance of EventHandler for passed handler
+   * Returns a generated id for the handler
    * @param {function} handler 
+   * @param {boolean} isOnce
    */
   registerHandler(handler, isOnce = false) {
     if ( typeof handler !== 'function' ) return null;
-    const id = uuid();
+    const id = `${this.name}-${Date.now()}`;
     this.handlers[id] = new EventHandler(id, handler, isOnce);
     return id;
   }
 
   /**
-   * returns the deleted handler
+   * Removes the handler with the corresponding id
+   * Returns the deleted handler
    * @param {String} id 
    */
   removeHandler(id) {

@@ -62,9 +62,15 @@ class EventEmitter {
     this.dispatchEvent(eventName, ...args);
   }
 
+  /**
+   * Removes handler with corresponding id
+   * Returns the deleted handler
+   * @param {String} eventName 
+   * @param {String} id 
+   */
   removeEventListener(eventName, id) {
     if ( !this.hasEvent(eventName) ) return;
-    this.events[eventName].removeHandler(id);
+    return this.events[eventName].removeHandler(id);
   }
 
   hasEvent(eventName) {

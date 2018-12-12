@@ -1,7 +1,8 @@
 {
   "name": "@jikurata/events",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Lightweight event listening module",
+  "repository": "https://github.com/jikurata/events",
   "main": "index.js",
   "scripts": {
     "test": "jest --config jest-config.json"

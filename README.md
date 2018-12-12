@@ -1,5 +1,5 @@
 # events
-Lightweight javascript event listener library
+Lightweight javascript event listening library
 ---
 ## Install
 ```

@@ -16,6 +16,15 @@ emitter.on('eventName', () => {
 
 emitter.emit('eventName'); // 'eventName has been triggered!'
 ```
+Pass as many arguments as needed for your event handlers
+```
+emitter.on('foo', (val1, val2) => {
+  const sum = val1 + val2;
+  console.log(`Sum: ${sum}`);
+});
+
+emitter.emit('foo', 3, 5); // 'Sum: 8';
+```
 ### API
 ---
 **Class** EventEmitter

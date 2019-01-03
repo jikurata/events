@@ -1,4 +1,7 @@
 .gitignore
 __test__/
+src/
+build/
+download/
 jest-config.json
 package-lock.json

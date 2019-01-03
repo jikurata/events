@@ -1,5 +1,5 @@
 'use strict';
-const Event = require('../Event.js');
+const Event = require('../src/Event.js');
 
 describe('Registers a function handler in the event object', () => {
   test('Registers handler when its type is function', () => {

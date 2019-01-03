@@ -1,11 +1,12 @@
 {
-  "name": "@jikurata/events",
+  "name": "@dweomercraft/events",
   "version": "1.2.1",
   "description": "Lightweight event listening library",
-  "repository": "https://github.com/jikurata/events",
-  "main": "index.js",
+  "repository": "https://github.com/dweomercraft/events",
+  "main": "dist/index.js",
   "scripts": {
-    "test": "jest --config jest-config.json"
+    "test": "jest --config jest-config.json",
+    "build": "node build/task.js"
   },
   "keywords": [
     "event",
@@ -16,6 +17,7 @@
   "author": "jikurata",
   "license": "ISC",
   "devDependencies": {
+    "browserify": "^16.2.3",
     "jest": "^23.6.0"
   }
 }

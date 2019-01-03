@@ -10,20 +10,19 @@ npm install @jikurata/events
 const EventEmitter = require('@jikurata/events');
 
 const emitter = new EventEmitter();
-emitter.on('eventName', () => {
-  console.log('eventName has been triggered!');
+emitter.on('ping', () => {
+  console.log('pong!');
 });
 
-emitter.emit('eventName'); // 'eventName has been triggered!'
+emitter.emit('ping'); // pong!
 ```
 Pass as many arguments as needed for your event handlers
 ```
-emitter.on('foo', (val1, val2) => {
-  const sum = val1 + val2;
-  console.log(`Sum: ${sum}`);
+emitter.on('val', (val1, val2) => {
+  console.log(`I have ${val1} and ${val2}`);
 });
 
-emitter.emit('foo', 3, 5); // 'Sum: 8';
+emitter.emit('val', 3, 5); // I have 3 and 5;
 ```
 ### API
 ---
@@ -73,36 +72,3 @@ emitter.emit('foo', 3, 5); // 'Sum: 8';
     {String} id: The id of the *EventHandler*
   *Description*:
     Removes a handler from the specified *Event*
-
-**Class** Event
-#### Properties
-- name: String that defines the Event name
-- handlers: Object containing all EventHandlers assigned to the event
-#### Methods
-- runHandlers(..args)
-  *Description*:
-    Calls all handler functions assigned to the Event
-
-- registerHandler(handler, isOnce)
-  *Properties*:
-    {Function} handler
-    {Boolean} isOnce: Defaults to false
-  *Description*:
-    Registers a handler to the event
-
-- removeHandler(id)
-  *Properties*:
-    {String} id
-  *Description*:
-    Removes the handler associated with the id.
-
-
-**Class** EventHandler
-#### Properties
-- id: id of the EventHandler
-- handler: Function associated with the EventHandler
-- isOnce: Boolean Determines if this EventHandler should be called once.
-#### Methods
-run(...args) 
-*Description*
-  Calls the handler funciton. Any arguments get passed to the handler.

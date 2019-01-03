@@ -3,11 +3,11 @@ Lightweight javascript event listening library
 ---
 ## Install
 ```
-npm install @jikurata/events
+npm install @dweomercraft/events
 ```
 ## Usage
 ```
-const EventEmitter = require('@jikurata/events');
+const EventEmitter = require('@dweomercraft/events');
 
 const emitter = new EventEmitter();
 emitter.on('ping', () => {

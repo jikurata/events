@@ -1,5 +1,5 @@
 'use strict';
-const EventEmitter = require('../src/EventEmitter.js');
+const EventEmitter = require('../lib/EventEmitter.js');
 
 describe('Registers an Event object', () => {
   test('Registers an event named "test" in the events map', () => {

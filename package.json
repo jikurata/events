@@ -1,13 +1,11 @@
 {
   "name": "@dweomercraft/events",
-  "version": "2.1.2",
+  "version": "2.2.0",
   "description": "Lightweight event listening library",
   "repository": "https://github.com/dweomercraft/events",
-  "main": "dist/EventEmitter.js",
+  "main": "index.js",
   "scripts": {
-    "test": "jest --config jest-config.json",
-    "t": "node dist/test.js",
-    "build": "node build/task.js"
+    "test": "jest --config jest-config.json"
   },
   "keywords": [
     "event",

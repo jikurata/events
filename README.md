@@ -1,4 +1,4 @@
-# events
+# events v2.3.0
 Lightweight javascript event listening library
 ---
 ## Install
@@ -24,7 +24,7 @@ emitter.on('val', (val1, val2) => {
 
 emitter.emit('val', 3, 5); // I have 3 and 5;
 ```
-### API
+## API
 ---
 **Class** EventEmitter
 #### Properties
@@ -35,6 +35,26 @@ emitter.emit('val', 3, 5); // I have 3 and 5;
     {String} eventName: The name of the *Event* to be registered
   *Description*:
     Registers an *Event* with the name *eventName*
+
+- unregister(eventName)
+  *Arguments*:
+    {String} eventName
+  *Description*:
+    Removes the Event object with the name *eventName*
+
+- subscribe(eventName)
+  *Arguments*:
+    {String} eventName
+  *Description*:
+    Sets the Event's isActive property to true.
+    Registered events are subscribed to by default.
+
+- unsubscribe(eventName)
+  *Arguments*:
+    {String} eventName
+  *Description*:
+    Sets the Event's isActive property to false.
+    If the event does not exist yet, it will register the event and then unsubscribe from it.
 
 - addEventListener(eventName, handler, options)
   *Arguments*:
@@ -72,3 +92,10 @@ emitter.emit('val', 3, 5); // I have 3 and 5;
     {String} id: The id of the *EventHandler*
   *Description*:
     Removes a handler from the specified *Event*
+
+## Version Log
+---
+**v2.3.0**
+- Event objects now have the property *isActive* to determine whether an Event should execute its handlers or not. This property is set to true by default.
+- The EventEmitter can toggle an Event's *isActive* property by using the *subscribe*() and *unsubscribe*() methods.
+- The EventEmitter can now kill Events using the *unregister*() method. This will remove an Event, along with all of its handlers.

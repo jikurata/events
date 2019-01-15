@@ -22,6 +22,7 @@ describe('EventEmitter functional tests', () => {
       emitter.register(' ');
       emitter.register(42);
       emitter.register(-1);
+      emitter.on(undefined, () => {});
       expect(Object.keys(emitter.events).length).toBe(0);
     });
   });

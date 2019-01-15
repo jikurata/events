@@ -95,6 +95,9 @@ emitter.emit('val', 3, 5); // I have 3 and 5;
 
 ## Version Log
 ---
+**v2.3.1**
+- An issue where certain EventEmitter methods would throw an error when passed an invalid event name has been fixed.
+
 **v2.3.0**
 - Event objects now have the property *isActive* to determine whether an Event should execute its handlers or not. This property is set to true by default.
 - The EventEmitter can toggle an Event's *isActive* property by using the *subscribe*() and *unsubscribe*() methods.

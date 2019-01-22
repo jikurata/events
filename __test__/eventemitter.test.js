@@ -77,4 +77,16 @@ describe('EventEmitter functional tests', () => {
       expect(emitter.hasEvent('foo')).toBe(false);
     });
   });
+  describe('Suppresses event triggering when isEnabled property is falsy', () => {
+    test('valueShouldNotChange should not change after emitting foo', () => {
+      const emitter = new EventEmitter();
+      let valueShouldNotChange = 1;
+      emitter.on('foo', () => {
+        valueShouldNotChange = 0;
+      });
+      emitter.disable();
+      emitter.emit('foo');
+      expect(valueShouldNotChange).toBe(1);
+    });
+  });
 });

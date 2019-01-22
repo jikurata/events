@@ -1,6 +1,6 @@
 {
   "name": "@dweomercraft/events",
-  "version": "2.3.1",
+  "version": "2.3.2",
   "description": "Lightweight event listening library",
   "repository": "https://github.com/dweomercraft/events",
   "main": "index.js",

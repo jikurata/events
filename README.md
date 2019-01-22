@@ -1,4 +1,4 @@
-# events v2.3.0
+# events v2.3.2
 Lightweight javascript event listening library
 ---
 ## Install
@@ -29,6 +29,7 @@ emitter.emit('val', 3, 5); // I have 3 and 5;
 **Class** EventEmitter
 #### Properties
 - events: Object containing all Events registered by the EventEmitter. Object keys are the event names.
+- isEnabled: *Boolean*. When disabled, the emitter will suppress all emits. Registering and unregistering events will still occur regardless of this property.
 #### Methods
 - register(eventName)
   *Arguments*:
@@ -55,6 +56,14 @@ emitter.emit('val', 3, 5); // I have 3 and 5;
   *Description*:
     Sets the Event's isActive property to false.
     If the event does not exist yet, it will register the event and then unsubscribe from it.
+
+- enable()
+  *Description*:
+    Toggles isEnabled to be true
+
+- disable()
+  *Description*:
+    Toggles isEnabled to be false
 
 - addEventListener(eventName, handler, options)
   *Arguments*:
@@ -95,6 +104,9 @@ emitter.emit('val', 3, 5); // I have 3 and 5;
 
 ## Version Log
 ---
+**v2.3.2**
+- Implemented *isEnabled* property for EventEmitter. When isEnabled is falsy, EventEmitter will suppress all emits. Registering and unregistering events will still occur regardless of this setting.
+
 **v2.3.1**
 - An issue where certain EventEmitter methods would throw an error when passed an invalid event name has been fixed.
 

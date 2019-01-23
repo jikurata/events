@@ -1,4 +1,4 @@
-# events v2.3.2
+# events v2.3.3
 Lightweight javascript event listening library
 ---
 ## Install

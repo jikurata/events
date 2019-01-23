@@ -3,6 +3,22 @@ const EventEmitter = require('../lib/EventEmitter.js');
 const Event = require('../lib/Event.js');
 
 describe('EventEmitter functional tests', () => {
+  describe('Providing an id property in options will make the EventEmitter instance global', () => {
+    test('Two instances with id "foo" have "bar" as a registered event', () => {
+      const emitter = new EventEmitter({id: 'foo'});
+      const secondEmitter = EventEmitter.instanceOf('foo');
+      emitter.on('bar', () => console.log('foobar'));
+      expect(secondEmitter.hasEvent('bar')).toBeTruthy();
+    });
+  });
+  describe('Local instances of EventEmitter do not interfere with global emitters', () => {
+    describe('localEmitter does not have the "foobar" event', () => {
+      const globalEmitter = new EventEmitter({id: 'foo'});
+      const localEmitter = new EventEmitter();
+      globalEmitter.register('foobar');
+      expect(localEmitter.hasEvent('foobar')).toBeFalsy();
+    });
+  });
   describe('Registers an Event object', () => {
     test('Registers an event named "foo" in the events map', () => {
       const emitter = new EventEmitter();

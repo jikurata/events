@@ -24,10 +24,24 @@ emitter.on('val', (val1, val2) => {
 
 emitter.emit('val', 3, 5); // I have 3 and 5;
 ```
+Make an instance of EventEmitter available globally
+```
+const firstEmitter = new EventEmitter({id: 'foo'});
+const secondEmitter = EventEmitter.instanceOf('foo');
+const thirdEmitter = new EventEmitter({id: 'foo'});
+const localEmitter = new EventEmitter();
+
+firstEmitter.on('bar', () => console.log('foobar'));
+localEmitter.on('bar', () => console.log('not foo'));
+secondEmitter.emit('bar');  // foobar
+thirdEmitter.emit('bar');   // foobar
+localEmitter.emit('bar');   // not foo
+```
 ## API
 ---
-**Class** EventEmitter
+**Class** EventEmitter(*EventEmitterOptions*)
 #### Properties
+- id: *String* Defines the EventEmitter at the global scope. When id is a falsy value, that instance of EventEmitter will not be available.
 - events: Object containing all Events registered by the EventEmitter. Object keys are the event names.
 - isEnabled: *Boolean*. When disabled, the emitter will suppress all emits. Registering and unregistering events will still occur regardless of this property.
 #### Methods
@@ -101,9 +115,14 @@ emitter.emit('val', 3, 5); // I have 3 and 5;
     {String} id: The id of the *EventHandler*
   *Description*:
     Removes a handler from the specified *Event*
-
+**Object** EventEmitterOptions
+  - id (*Default: ''*): *Optional*. When id is a truthy value, the EventEmitter will be available globally.
+  - enable (*Default: true*): *Optional*. Sets the initial state of the EventEmitter.
 ## Version Log
 ---
+**v2.3.3**
+- EventEmitter can now be set as a global reference by providing an id in its constructor.
+
 **v2.3.2**
 - Implemented *isEnabled* property for EventEmitter. When isEnabled is falsy, EventEmitter will suppress all emits. Registering and unregistering events will still occur regardless of this setting.
 

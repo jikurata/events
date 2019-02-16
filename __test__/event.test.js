@@ -1,5 +1,6 @@
 'use strict';
 const Event = require('../lib/Event.js');
+const EventHandler = require('../lib/EventHandler.js');
 
 describe('Registers a function handler in the event object', () => {
   test('Registers handler when its type is function', () => {
@@ -7,8 +8,8 @@ describe('Registers a function handler in the event object', () => {
     const handler = () => {
       return true;
     };
-    const id = event.registerHandler(handler);
-    expect(typeof event.handlers[id].handler).toBe('function');
+    event.registerHandler(handler);
+    expect(event.handlers.length).toBe(1);
   });
   test('Return null if handler arg is empty', () => {
     const event = new Event('test');
@@ -33,9 +34,9 @@ describe('Removes an existing event handler from the event object', () => {
     const handler = () => {
       return true;
     };
-    const id = event.registerHandler(handler);
-    const removedHandler = event.removeHandler(id);
-    expect(typeof removedHandler).toBe('function');
+    event.registerHandler(handler, {id: 'foo'});
+    const removedHandler = event.removeHandler('foo');
+    expect(removedHandler instanceof EventHandler).toBeTruthy();
   });
 });
 describe('Runs all registered handlers when event is emitted', () => {

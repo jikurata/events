@@ -2,7 +2,7 @@
 const EventEmitter = require('../lib/EventEmitter.js');
 const Event = require('../lib/Event.js');
 
-describe('EventEmitter functional tests', () => {
+describe('EventEmitter unit tests', () => {
   describe('Providing an id property in options will make the EventEmitter instance global', () => {
     test('Two instances with id "foo" have "bar" as a registered event', () => {
       const emitter = new EventEmitter({id: 'foo'});

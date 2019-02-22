@@ -1,4 +1,4 @@
-# events v2.4.0
+# events v2.4.1
 Lightweight javascript event listening library
 ---
 ## Install
@@ -123,6 +123,9 @@ localEmitter.emit('bar');   // not foo
   -  priority: {*String*}: Setting this property to **'first'** will add the handler to the front of the queue. Default behavior adds handlers to the end.
 ## Version Log
 ---
+**v2.4.1**
+- Fixed a bug with ```options.priority = 'first'``` that caused the Event to remove an event from the list, instead of adding one.
+
 **v2.4.0**
 - Event's handler property is now an Array queue. id referencing now occurs at the EventHandler level.
 - Implement option to add a new handler to the front or end of the handler queue.

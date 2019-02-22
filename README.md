@@ -41,95 +41,103 @@ localEmitter.emit('bar');   // not foo
 ---
 **Class** EventEmitter(*EventEmitterOptions*)
 #### Properties
-- id: *String* Defines the EventEmitter at the global scope. When id is a falsy value, that instance of EventEmitter will not be available.
-- events: Object containing all Events registered by the EventEmitter. Object keys are the event names.
-- isEnabled: *Boolean*. When disabled, the emitter will suppress all emits. Registering and unregistering events will still occur regardless of this property.
+- **id**: *String* Defines the EventEmitter at the global scope. When id is a falsy value, that instance of EventEmitter will not be available.
+- **events**: Object containing all Events registered by the EventEmitter. Object keys are the event names.
+- **isEnabled**: *Boolean*. When disabled, the emitter will suppress all emits. Registering and unregistering events will still occur regardless of this property.
 #### Methods
-- register(eventName)
-  *Arguments*:
-    {String} eventName: The name of the *Event* to be registered
-  *Description*:
-    Registers an *Event* with the name *eventName*
+- **register**(*eventName*)<br>
+  *Arguments*:<br>
+    {*String*} eventName: The name of the *Event* to be registered<br>
+  *Description*:<br>
+    Registers an *Event* with the name *eventName*<br>
 
-- unregister(eventName)
-  *Arguments*:
-    {String} eventName
-  *Description*:
-    Removes the Event object with the name *eventName*
+- **unregister**(*eventName*)<br>
+  *Arguments*:<br>
+    {*String*} eventName<br>
+  *Description*:<br>
+    Removes the Event object with the name *eventName*<br>
 
-- subscribe(eventName)
-  *Arguments*:
-    {String} eventName
-  *Description*:
-    Sets the Event's isActive property to true.
-    Registered events are subscribed to by default.
+- **subscribe**(*eventName*)<br>
+  *Arguments*:<br>
+    {*String*} eventName<br>
+  *Description*:<br>
+    Sets the Event's isActive property to true.<br>
+    Registered events are subscribed to by default.<br>
 
-- unsubscribe(eventName)
-  *Arguments*:
-    {String} eventName
-  *Description*:
-    Sets the Event's isActive property to false.
-    If the event does not exist yet, it will register the event and then unsubscribe from it.
+- **unsubscribe**(*eventName*)<br>
+  *Arguments*:<br>
+    {*String*} eventName<br>
+  *Description*:<br>
+    Sets the Event's isActive property to false.<br>
+    If the event does not exist yet, it will register the event and then unsubscribe from it.<br>
 
-- enable()
-  *Description*:
-    Toggles isEnabled to be true
+- **enable**()<br>
+  *Description*:<br>
+    Toggles isEnabled to be true<br>
 
-- disable()
-  *Description*:
-    Toggles isEnabled to be false
+- **disable**()<br>
+  *Description*:<br>
+    Toggles isEnabled to be false<br>
 
-- addEventListener(eventName, handler, options)
-  *Arguments*:
-    {String} eventName
-    {Function} handler: A function to be called when the *Event* is triggered
-    {Object} options (Optional):
-      Properties:
-        once: true/false
-          Tells the EventEmitter to call the handler only once
-  *Description*:
-    Registers the event if it does not exist yet, and adds the handler to the *Event* object.
-    Returns the id of the assigned handler.
+- **addEventListener**(*eventName*, *handler*, *options*)<br>
+  *Arguments*:<br>
+    {*String*} eventName<br>
+    {*Function*} handler: A function to be called when the *Event* is triggered<br>
+    {*EventHandlerOptions*} options (Optional):<br>
+  *Description*:<br>
+    Registers the event if it does not exist yet, and adds the handler to the *Event* object.<br>
+    Returns the id of the assigned handler.<br>
 
 
-- on(eventName, handler)
-  *Description*: Wrapper for addEventListener. Passes {once: false} as the option.
+- **on**(*eventName*, *handler*, *options*)<br>
+  *Description*: Wrapper for addEventListener. Passes {once: false} as the option.<br>
 
-- once(eventName, handler)
-  *Description*: Wrapper for addEventListener. Passes {once: true} as the option.
+- **once**(*eventName*, *handler*)<br>
+  *Description*: Wrapper for addEventListener. Passes {once: true} as the option.<br>
 
-- dispatchEvent(eventName, ...args)
-  *Arguments*:
-    {String} eventName
-    {any} arg1, arg2, argN...: Arguments to be passed into the *Event*'s *EventHandlers*
-  *Description*:
-    Triggers the event, calls all of the handlers assigned to the *Event*.
+- **dispatchEvent**(*eventName*, *...args*)<br>
+  *Arguments*:<br>
+    {*String*} eventName<br>
+    {*any*} arg1, arg2, argN...: Arguments to be passed into the *Event*'s *EventHandlers*<br>
+  *Description*:<br>
+    Triggers the event, calls all of the handlers assigned to the *Event*.<br>
 
-- emit(eventName, ...args)
-  *Description*:
-    Wrapper for dispatchEvent. Exists for semantic purposes.
+- **emit**(*eventName*, *...args*)<br>
+  *Description*:<br>
+    Wrapper for dispatchEvent. Exists for semantic purposes.<br>
 
-- removeEventListener(eventName, id)
-  *Arguments*:
-    {String} eventName
-    {String} id: The id of the *EventHandler*
-  *Description*:
-    Removes a handler from the specified *Event*
-**Object** EventEmitterOptions
-  - id (*Default: ''*): *Optional*. When id is a truthy value, the EventEmitter will be available globally.
-  - enable (*Default: true*): *Optional*. Sets the initial state of the EventEmitter.
+- **removeEventListener**(*eventName*, *id*)<br>
+  *Arguments*:<br>
+    {*String*} eventName<br>
+    {*String*} id: The id of the *EventHandler*<br>
+  *Description*:<br>
+    Removes a handler from the specified *Event*<br>
+    
+**Object** *EventEmitterOptions*<br>
+  - id {*String*} (*Default: ''*): *Optional*. When id is a truthy value, the EventEmitter will be available globally.<br>
+  - enable {*Boolean*} (*Default: true*): *Optional*. Sets the initial state of the EventEmitter.
+
+**Object** *EventHandlerOptions*<br>
+  -  id: {*String*}: Defines the id of the EventHandler<br>
+  -  once: {*Boolean*} (*Default: false*): Tells the EventEmitter to call the handler only once<br>
+  -  priority: {*String*}: Setting this property to **'first'** will add the handler to the front of the queue. Default behavior adds handlers to the end.
 ## Version Log
 ---
+**v2.4.0**
+- Event's handler property is now an Array queue. id referencing now occurs at the EventHandler level.
+- Implement option to add a new handler to the front or end of the handler queue.
+- Implement option to define the handler id.
+
 **v2.3.3**
-- EventEmitter can now be set as a global reference by providing an id in its constructor.
+- EventEmitter can now be set as a global reference by providing an id in its constructor.<br>
 
 **v2.3.2**
-- Implemented *isEnabled* property for EventEmitter. When isEnabled is falsy, EventEmitter will suppress all emits. Registering and unregistering events will still occur regardless of this setting.
+- Implemented *isEnabled* property for EventEmitter. When isEnabled is falsy, EventEmitter will suppress all emits. Registering and unregistering events will still occur regardless of this setting.<br>
 
 **v2.3.1**
-- An issue where certain EventEmitter methods would throw an error when passed an invalid event name has been fixed.
+- An issue where certain EventEmitter methods would throw an error when passed an invalid event name has been fixed.<br>
 
 **v2.3.0**
 - Event objects now have the property *isActive* to determine whether an Event should execute its handlers or not. This property is set to true by default.
 - The EventEmitter can toggle an Event's *isActive* property by using the *subscribe*() and *unsubscribe*() methods.
-- The EventEmitter can now kill Events using the *unregister*() method. This will remove an Event, along with all of its handlers.
+- The EventEmitter can now kill Events using the *unregister*() method. This will remove an Event, along with all of its handlers.<br>

@@ -57,4 +57,20 @@ describe('Event unit tests', () => {
       expect([val, bar]).toEqual([false, 42]);
     });
   });
+  describe('A persisted event will immediately execute newly registered handlers', () => {
+    test('Expects val to be false and bar to be 42', () => {
+      const event = new Event('foo', {persist: true});
+      let val = true;
+      event.registerHandler(() => val = false);
+      expect(val).toBeFalsy();
+    });
+  });
+  describe('Removes a handler if its set to be deleted', () => {
+    test('Expects handler length to be 0', () => {
+      const event = new Event('foo');
+      event.registerHandler(() => {}, {isOnce: true});
+      event.runHandlers();
+      expect(event.handlers.length).toEqual(0);
+    });
+  });
 });

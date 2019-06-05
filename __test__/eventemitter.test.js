@@ -78,11 +78,11 @@ describe('EventEmitter unit tests', () => {
     });
   });
   describe('Unsubscribes from an event', () => {
-    test('"foo" Event exists, but is set to inactive', () => {
+    test('"foo" Event exists, but is not subscribed', () => {
       const emitter = new EventEmitter();
       emitter.register('foo');
       emitter.unsubscribe('foo');
-      expect(emitter.events['foo'].isActive).toBe(false);
+      expect(emitter.events['foo'].isSubscribed).toBe(false);
     });
   });
   describe('Removes an event object from the event list', () => {

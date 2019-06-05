@@ -1,13 +1,13 @@
-# events v2.4.2
+# events v2.5.0
 Lightweight javascript event listening library
 ---
 ## Install
 ```
-npm install @dweomercraft/events
+npm install @jikurata/events
 ```
 ## Usage
 ```
-const EventEmitter = require('@dweomercraft/events');
+const EventEmitter = require('@jikurata/events');
 
 const emitter = new EventEmitter();
 emitter.on('ping', () => {
@@ -37,7 +37,7 @@ secondEmitter.emit('bar');  // foobar
 thirdEmitter.emit('bar');   // foobar
 localEmitter.emit('bar');   // not foo
 ```
-## API
+## Documentation
 ---
 **Class** EventEmitter(*EventEmitterOptions*)
 #### Properties
@@ -79,28 +79,28 @@ localEmitter.emit('bar');   // not foo
   *Description*:<br>
     Toggles isEnabled to be false<br>
 
-- **addEventListener**(*eventName*, *handler*, *options*)<br>
+- **addEventListener**(*eventName*, *listener*, *options*)<br>
   *Arguments*:<br>
     {*String*} eventName<br>
-    {*Function*} handler: A function to be called when the *Event* is triggered<br>
-    {*EventHandlerOptions*} options (Optional):<br>
+    {*Function*} listener: A function to be called when the *Event* is triggered<br>
+    {*EventListenerOptions*} options (Optional):<br>
   *Description*:<br>
-    Registers the event if it does not exist yet, and adds the handler to the *Event* object.<br>
-    Returns the id of the assigned handler.<br>
+    Registers the event if it does not exist yet, and adds the listener to the *Event* object.<br>
+    Returns the id of the assigned listener.<br>
 
 
-- **on**(*eventName*, *handler*, *options*)<br>
+- **on**(*eventName*, *listener*, *options*)<br>
   *Description*: Wrapper for addEventListener. Passes {once: false} as the option.<br>
 
-- **once**(*eventName*, *handler*)<br>
+- **once**(*eventName*, *listener*)<br>
   *Description*: Wrapper for addEventListener. Passes {once: true} as the option.<br>
 
 - **dispatchEvent**(*eventName*, *...args*)<br>
   *Arguments*:<br>
     {*String*} eventName<br>
-    {*any*} arg1, arg2, argN...: Arguments to be passed into the *Event*'s *EventHandlers*<br>
+    {*any*} arg1, arg2, argN...: Arguments to be passed into the *Event*'s *EventListeners*<br>
   *Description*:<br>
-    Triggers the event, calls all of the handlers assigned to the *Event*.<br>
+    Triggers the event, calls all of the listeners assigned to the *Event*.<br>
 
 - **emit**(*eventName*, *...args*)<br>
   *Description*:<br>
@@ -109,20 +109,30 @@ localEmitter.emit('bar');   // not foo
 - **removeEventListener**(*eventName*, *id*)<br>
   *Arguments*:<br>
     {*String*} eventName<br>
-    {*String*} id: The id of the *EventHandler*<br>
+    {*String*} id: The id of the *EventListener*<br>
   *Description*:<br>
-    Removes a handler from the specified *Event*<br>
+    Removes a listener from the specified *Event*<br>
     
 **Object** *EventEmitterOptions*<br>
   - id {*String*} (*Default: ''*): *Optional*. When id is a truthy value, the EventEmitter will be available globally.<br>
   - enable {*Boolean*} (*Default: true*): *Optional*. Sets the initial state of the EventEmitter.
 
-**Object** *EventHandlerOptions*<br>
-  -  id: {*String*}: Defines the id of the EventHandler<br>
-  -  once: {*Boolean*} (*Default: false*): Tells the EventEmitter to call the handler only once<br>
-  -  priority: {*String*}: Setting this property to **'first'** will add the handler to the front of the queue. Default behavior adds handlers to the end.
+**Object** *EventOptions*<br>
+  - persist {*String*} (*Default: false*): *Optional*. Immediately emit the current event state to any newly registered listeners.<br>
+  - subscribe {*Boolean*} (*Default: true*): *Optional*. When emitted, the event will execute its listeners.<br>
+  - limit {*Number*} (*Default: null (No limit)*): *Optional*. Restrict the event's listener pool size
+
+**Object** *EventListenerOptions*<br>
+  -  id: {*String*}: Defines the id of the EventListener<br>
+  -  once: {*Boolean*} (*Default: false*): Tells the EventEmitter to call the listener only once<br>
+  -  priority: {*String*}: Setting this property to **'first'** will add the listener to the front of the queue. Default behavior adds listeners to the end.
 ## Version Log
 ---
+**v2.5.0**
+- Renamed EventHandler to EventListener
+- Events can now limit the total number of listeners in its pool
+- Events can persist its state, allowing it to immediate pass its state to newly registered listeners
+- Refactored how Events handle Listeners registered to occur once
 **v2.4.2**
 - Fixed a bug that allowed a null handler argument to bypass a validation check
 

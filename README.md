@@ -133,6 +133,7 @@ localEmitter.emit('bar');   // not foo
 - Events can now limit the total number of listeners in its pool
 - Events can persist its state, allowing it to immediate pass its state to newly registered listeners
 - Refactored how Events handle Listeners registered to occur once
+
 **v2.4.2**
 - Fixed a bug that allowed a null handler argument to bypass a validation check
 

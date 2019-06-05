@@ -42,7 +42,7 @@ describe('EventEmitter unit tests', () => {
       expect(Object.keys(emitter.events).length).toBe(0);
     });
   });
-  describe('Emitting an event with parameters will pass those parameters to the handler' ,() => {
+  describe('Emitting an event with parameters will pass those parameters to the listener' ,() => {
     test('Sets val to "bar" when foo is passed as a parameter', () => {
       const emitter = new EventEmitter();
       const foo = 'bar';

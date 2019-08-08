@@ -12,21 +12,49 @@ describe('Event unit tests', () => {
       event.registerListener(listener);
       expect(event.listeners.length).toBe(1);
     });
-    test('Return null if listener arg is empty', () => {
+    test('throw if listener arg is empty', () => {
       const event = new Event('foo');
-      expect(event.registerListener()).toBe(null);
+      let e = null;
+      try {
+        event.registerListener();
+      }
+      catch(err) {
+        e = err;
+      }
+      expect(e instanceof Error).toBeTruthy();
     });
-    test('Return null if listener is 42', () => {
+    test('throw if listener is 42', () => {
       const event = new Event('foo');
-      expect(event.registerListener(42)).toBe(null);
+      let e = null;
+      try {
+        event.registerListener(42);
+      }
+      catch(err) {
+        e = err;
+      }
+      expect(e instanceof Error).toBeTruthy();
     });
-    test('Return null if listener is " "', () => {
+    test('throw if listener is " "', () => {
       const event = new Event('foo');
-      expect(event.registerListener(' ')).toBe(null);
+      let e = null;
+      try {
+        event.registerListener(' ');
+      }
+      catch(err) {
+        e = err;
+      }
+      expect(e instanceof Error).toBeTruthy();
     });
-    test('Return null if listener is null', () => {
+    test('throw if listener is null', () => {
       const event = new Event('foo');
-      expect(event.registerListener(null)).toBe(null);
+      let e = null;
+      try {
+        event.registerListener(null);
+      }
+      catch(err) {
+        e = err;
+      }
+      expect(e instanceof Error).toBeTruthy();
     });
   });
   describe('Setting priority = first will push the listener to the front of the queue', () => {
@@ -46,14 +74,14 @@ describe('Event unit tests', () => {
       expect(removedHandler instanceof EventListener).toBe(true);
     });
   });
-  describe('Runs all registered listeners when runHandlers is called', () => {
+  describe('Runs all registered listeners when runListeners is called', () => {
     test('Expects val to be false and bar to be 42', () => {
       const event = new Event('foo');
       let val = true;
       let bar = 0;
       event.registerListener(() => val = false);
       event.registerListener(() => bar = 42);
-      event.runHandlers();
+      event.runListeners();
       expect([val, bar]).toEqual([false, 42]);
     });
   });
@@ -61,7 +89,8 @@ describe('Event unit tests', () => {
     test('Expects val to be false and bar to be 42', () => {
       const event = new Event('foo', {persist: true});
       let val = true;
-      event.registerListener(() => val = false);
+      event.runListeners(false);
+      event.registerListener((v) => {val = v});
       expect(val).toBeFalsy();
     });
   });
@@ -69,20 +98,25 @@ describe('Event unit tests', () => {
     test('Expects listener length to be 0', () => {
       const event = new Event('foo');
       event.registerListener(() => {}, {isOnce: true});
-      event.runHandlers();
+      event.runListeners();
       expect(event.listeners.length).toEqual(0);
     });
   });
   describe('Setting a max listener count limits the number of listeners in the pool', () => {
-    test('Expects listener length to be 3', () => {
+    test('throws when listener count exceeds limit', () => {
       const event = new Event('foo');
-      event.limit(3);
+      event.setMaxListenerCount = 3;
       event.registerListener(() => {});
       event.registerListener(() => {});
       event.registerListener(() => {});
-      event.registerListener(() => {});
-      event.runHandlers();
-      expect(event.listeners.length).toEqual(3);
+      let e = null;
+      try {
+        event.registerListener(() => {});
+      }
+      catch(err) {
+        e = err;
+      }
+      expect(e instanceof Error).toBeTruthy();
     });
   });
 });

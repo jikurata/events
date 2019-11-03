@@ -1,5 +1,6 @@
 'use strict';
 const EventListener = require('./EventListener.js');
+const EventError = require('./Error.js');
 
 class Event {
   constructor(name, param = {}) {
@@ -19,7 +20,7 @@ class Event {
       value: {
         'PREVIOUS_ARGS': [],
         'EMITTED_ONCE': false,
-        'MAX_POOL_SIZE': (param.hasOwnProperty('limit')) ? param.limit : null,
+        'MAX_POOL_SIZE': (param.hasOwnProperty('limit')) ? param.limit : 0,
         'PERSISTED': (param.hasOwnProperty('persist')) ? param.persist : false,
         'SUBSCRIBED': (param.hasOwnProperty('subscribe')) ? param.subscribe : true
       },
@@ -60,16 +61,14 @@ class Event {
    *                to the front or end of the queue
    */
   registerListener(f, options = {isOnce: false}) {
-    if ( !f || typeof f !== 'function') {
-      throw new Error(`Event ${this.name} expected an argument of type function`);
-    }
-    else if (this.maxListenerCount > 0 && this.listeners.length >= this.maxListenerCount) {
-      throw new Error(`Could not register listener. Event ${this.name} listener pool exceeds its maximum size of ${this.maxListenerCount}`);
-    }
+    // Throw if invalidated
+    EventError.InvalidListener.throwCheck(f);
+    EventError.ExceedsMaxListeners.throwCheck(this);
 
     const isOnce = (options.isOnce) ? options.isOnce : (options.once) ? options.once : false;
     const id = (options.hasOwnProperty('id')) ? options.id : `${this.listeners.length}-${Date.now()}`;
     const listener = new EventListener(id, f, isOnce);
+
     if ( options.priority === 'first' ) this.listeners.unshift(listener);
     else this.listeners.push(listener);
     // Run the listener with the previous event state when persisting
@@ -98,7 +97,7 @@ class Event {
   }
 
   set setMaxListenerCount(val) {
-    if ( typeof val === 'number' && val >= 0 ) {
+    if ( typeof val === 'number' ) {
       this.state.MAX_POOL_SIZE = val;
     };
   }

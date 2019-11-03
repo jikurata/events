@@ -1,5 +1,17 @@
 'use strict';
 
+class InvalidEventName extends TypeError {
+  constructor(arg) {
+    super(`Invalid Event Name: Expected a truthy String as an argument, received ${typeof arg} instead`);
+  }
+
+  static throwCheck(arg) {
+    if ( typeof arg !== 'string' || arg.trim() === '' ) {
+      throw new InvalidEventName(arg);
+    }
+  }
+}
+
 class InvalidListener extends TypeError {
   constructor(arg) {
     super(`Invalid Listener: Expected a Function as an argument, received ${typeof arg} instead`);
@@ -25,5 +37,6 @@ class ExceedsMaxListeners extends Error {
   }
 }
 
+module.exports.InvalidEventName = InvalidEventName;
 module.exports.InvalidListener = InvalidListener;
 module.exports.ExceedsMaxListeners = ExceedsMaxListeners;

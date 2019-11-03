@@ -1,4 +1,4 @@
-# events v2.5.3
+# events v2.5.4
 Lightweight javascript event listening library
 ---
 ## Install
@@ -128,6 +128,9 @@ localEmitter.emit('bar');   // not foo
   -  priority: {*String*}: Setting this property to **'first'** will add the listener to the front of the queue. Default behavior adds listeners to the end.
 ## Version Log
 ---
+**v2.5.4**
+- Refactor tests to Taste tests
+
 **v2.5.3**
 - Persisted events will now only execute newly added listeners if the event has been emitted at least once
 

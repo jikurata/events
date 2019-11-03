@@ -1,2 +1,2 @@
 'use strict';
-module.exports = require('./lib/EventEmitter.js');
+module.exports = require('./src/EventEmitter.js');

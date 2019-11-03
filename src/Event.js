@@ -4,6 +4,8 @@ const EventError = require('./Error.js');
 
 class Event {
   constructor(name, param = {}) {
+    EventError.InvalidEventName.throwCheck(name);
+    
     Object.defineProperty(this, 'name', {
       value: name,
       enumerable: true,

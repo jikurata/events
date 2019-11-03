@@ -1,7 +1,6 @@
 'use strict';
 const Taste = require('@jikurata/taste');
 const Event = require('../src/Event.js');
-const EventListener = require('../src/EventListener.js');
 
 const test = new Promise((resolve, reject) => {
   Taste.flavor('Event Registration')
@@ -104,4 +103,8 @@ const test = new Promise((resolve, reject) => {
     }
   })
   .expect('exceedLimit').toBeTruthy();
+  
+  resolve();
 });
+
+module.exports = test;

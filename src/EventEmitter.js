@@ -1,4 +1,5 @@
 'use strict';
+const EventError = require('./Error.js');
 const Event = require('./Event.js');
 const instances = {};
 
@@ -14,7 +15,12 @@ class EventEmitter {
       writable: false,
       configurable: false
     });
-    this.events = {};
+    Object.defineProperty(this, 'events', {
+      value: {},
+      enumerable: true,
+      writable: false,
+      configurable: false
+    });
     this._EVENTS_ENABLED = (options.hasOwnProperty('enable')) ? options.enable : true;
   }
 
@@ -31,8 +37,10 @@ class EventEmitter {
    *      Default: null (No limit)
    */
   register(eventName, options = {}) {
-    if ( this.hasEvent(eventName) || !this.isValidName(eventName) ) return;
-    this.events[eventName] = new Event(eventName, options);
+    if ( this.hasEvent(eventName) ) return;
+    
+    const event = new Event(eventName, options);
+    this.events[eventName] = event;
   }
 
   /**
@@ -51,7 +59,6 @@ class EventEmitter {
    */
   subscribe(eventName) {
     if ( !this.hasEvent(eventName) ) this.register(eventName);
-    if ( !this.isValidName(eventName) ) return;
     this.events[eventName].isSubscribed = true;
   }
 
@@ -95,7 +102,7 @@ class EventEmitter {
    * @param {Function} listener 
    * @param {EventListenerOption} options
    */
-  on(eventName, listener, options = undefined) {
+  on(eventName, listener, options = {}) {
     return this.addEventListener(eventName, listener, options);
   }
 
@@ -144,7 +151,11 @@ class EventEmitter {
   }
 
   isValidName(eventName) {
-    return ( typeof eventName === 'string' && eventName.trim() !== '' );
+    try {
+      EventError.InvalidEventName.throwCheck(eventName);
+      return true;
+    }
+    catch(err) { return false; }
   }
 
   enable() {

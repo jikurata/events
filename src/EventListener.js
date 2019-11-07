@@ -1,7 +1,11 @@
 'use strict';
+const EventError = require('./EventError.js');
 
 class EventListener {
   constructor(id, handler, isOnce = false) {
+    // Throw if handler is not a function
+    EventError.InvalidListener.throwCheck(handler);
+
     Object.defineProperty(this, 'id', {
       value: id,
       enumerable: true,
@@ -18,12 +22,34 @@ class EventListener {
     this._IS_DELETED = false;
   }
 
-  run(...args) {
-    if ( this.isDeleted ) return;
-    // Toggle handler for deletion after being executed when set to occur once
-    if ( this.isOnce ) this._IS_DELETED = true;
-    if ( typeof this.handler === 'function' ) this.handler(...args);
-    else this._IS_DELETED = true;
+  /**
+   * Executes the handler as a function and passes any arguments into
+   * the handler
+   * @param  {...any} args
+   * @returns {Promise:Void}
+   */
+  run() {
+    return new Promise((resolve, reject) => {
+      if ( this.isDeleted ) {
+        return resolve();
+      };
+      // Toggle handler for deletion after being executed when set to occur once
+      if ( this.isOnce ) {
+        this._IS_DELETED = true;
+      }
+
+      // Pass any arguments into the handler function
+      const returnValue = this.handler.apply(null, arguments);
+      if ( returnValue instanceof Promise ) {
+        // If the handler returns a Promise, wait for it to complete
+        returnValue
+        .then(() => resolve())
+        .catch(err => reject(err));
+      }
+      else {
+        return resolve();
+      }
+    });
   }
 
   get isOnce() {

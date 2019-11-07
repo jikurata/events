@@ -62,7 +62,6 @@ class Event {
    */
   registerListener(f, options = {isOnce: false}) {
     // Throw if invalidated
-    EventError.InvalidListener.throwCheck(f);
     EventError.ExceedsMaxListeners.throwCheck(this);
 
     const isOnce = (options.isOnce) ? options.isOnce : (options.once) ? options.once : false;

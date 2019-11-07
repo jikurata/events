@@ -1,6 +1,6 @@
 'use strict';
 const EventListener = require('./EventListener.js');
-const EventError = require('./Error.js');
+const EventError = require('./EventError.js');
 
 class Event {
   constructor(name, param = {}) {

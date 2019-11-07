@@ -1,20 +1,9 @@
 'use strict';
-const EventError = require('./Error.js');
+const EventError = require('./EventError.js');
 const Event = require('./Event.js');
-const instances = {};
 
 class EventEmitter {
-  constructor(options = {enable: true, id: ''}) {
-    if ( options.id ) {
-      if ( instances.hasOwnProperty(options.id) ) return instances[options.id];
-      instances[options.id] = this;
-    }
-    Object.defineProperty(this, 'id', {
-      value: options.id,
-      enumerable: true,
-      writable: false,
-      configurable: false
-    });
+  constructor(options = {enable: true}) {
     Object.defineProperty(this, 'events', {
       value: {},
       enumerable: true,

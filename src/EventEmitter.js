@@ -42,29 +42,6 @@ class EventEmitter {
   }
 
   /**
-   * Sets Event's isSubscribed property to true
-   * Emitting the event will cause the Event's listeners to execute
-   * @param {String} eventName 
-   */
-  subscribe(eventName) {
-    if ( !this.hasEvent(eventName) ) this.registerEvent(eventName);
-    this.events[eventName].isSubscribed = true;
-  }
-
-  /**
-   * Sets Event's isSubscribed property to false
-   * Prevents the Event's listeners from executing
-   * If the event does not exist yet, it will create the event
-   * and then unsubscribe from it
-   * @param {String} eventName 
-   */
-  unsubscribe(eventName) {
-    if ( !this.hasEvent(eventName) ) this.registerEvent(eventName);
-    if ( !this.isValidName(eventName) ) return;
-    this.events[eventName].isSubscribed = false;
-  }
-
-  /**
    * Register an event listener on an event
    * Returns a generated id for the listener
    * @param {String} eventName 

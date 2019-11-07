@@ -23,8 +23,7 @@ class Event {
         'PREVIOUS_ARGS': [],
         'EMITTED_ONCE': false,
         'MAX_POOL_SIZE': (param.hasOwnProperty('limit')) ? param.limit : 0,
-        'PERSISTED': (param.hasOwnProperty('persist')) ? param.persist : false,
-        'SUBSCRIBED': (param.hasOwnProperty('subscribe')) ? param.subscribe : true
+        'PERSISTED': (param.hasOwnProperty('persist')) ? param.persist : false
       },
       enumerable: true,
       writable: false,
@@ -33,7 +32,6 @@ class Event {
   }
 
   runListeners(...args) {
-    if ( !this.isSubscribed ) return;
     this.state.EMITTED_ONCE = true;
 
     const temp = [];
@@ -74,7 +72,7 @@ class Event {
     if ( options.priority === 'first' ) this.listeners.unshift(listener);
     else this.listeners.push(listener);
     // Run the listener with the previous event state when persisting
-    if ( this.isPersisted && this.isSubscribed && this.hasEmittedAtLeastOnce ) listener.run(...this.state.PREVIOUS_ARGS);
+    if ( this.isPersisted &&  this.hasEmittedAtLeastOnce ) listener.run(...this.state.PREVIOUS_ARGS);
     return id;
   }
 
@@ -98,7 +96,7 @@ class Event {
     return this.state.MAX_POOL_SIZE;
   }
 
-  set setMaxListenerCount(val) {
+  set maxListenerCount(val) {
     if ( typeof val === 'number' ) {
       this.state.MAX_POOL_SIZE = val;
     };
@@ -106,14 +104,6 @@ class Event {
 
   get hasEmittedAtLeastOnce() {
     return this.state.EMITTED_ONCE;
-  }
-
-  get isSubscribed() {
-    return this.state.SUBSCRIBED;
-  }
-
-  set isSubscribed(bool) {
-    this.state.SUBSCRIBED = !!bool;
   }
 
   get isPersisted() {

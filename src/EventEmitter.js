@@ -3,14 +3,13 @@ const EventError = require('./EventError.js');
 const Event = require('./Event.js');
 
 class EventEmitter {
-  constructor(options = {enable: true}) {
+  constructor() {
     Object.defineProperty(this, 'events', {
       value: {},
       enumerable: true,
       writable: false,
       configurable: false
     });
-    this._EVENTS_ENABLED = (options.hasOwnProperty('enable')) ? options.enable : true;
   }
 
   /**
@@ -124,25 +123,8 @@ class EventEmitter {
     catch(err) { return false; }
   }
 
-  enable() {
-    this._EVENTS_ENABLED = true;
-  }
-
-  disable() {
-    this._EVENTS_ENABLED = false;
-  }
-
   getEvent(name) {
     return this.events[name];
-  }
-
-  get isEventsEnabled() {
-    return this._EVENTS_ENABLED;
-  }
-
-  static instanceOf(id) {
-    if ( !instances.hasOwnProperty(id) ) return null;
-    return instances[id];
   }
 }
 

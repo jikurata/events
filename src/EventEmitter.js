@@ -36,7 +36,7 @@ class EventEmitter {
    *    'limit': {Number} Limits the pool size for listeners
    *      Default: null (No limit)
    */
-  register(eventName, options = {}) {
+  registerEvent(eventName, options = {}) {
     if ( this.hasEvent(eventName) ) return;
     
     const event = new Event(eventName, options);
@@ -47,7 +47,7 @@ class EventEmitter {
    * Removes the event object with the specified event name
    * @param {String} eventName 
    */
-  unregister(eventName) {
+  unregisterEvent(eventName) {
     if ( !this.hasEvent(eventName) ) return;
     delete this.events[eventName];
   }
@@ -58,7 +58,7 @@ class EventEmitter {
    * @param {String} eventName 
    */
   subscribe(eventName) {
-    if ( !this.hasEvent(eventName) ) this.register(eventName);
+    if ( !this.hasEvent(eventName) ) this.registerEvent(eventName);
     this.events[eventName].isSubscribed = true;
   }
 
@@ -70,7 +70,7 @@ class EventEmitter {
    * @param {String} eventName 
    */
   unsubscribe(eventName) {
-    if ( !this.hasEvent(eventName) ) this.register(eventName);
+    if ( !this.hasEvent(eventName) ) this.registerEvent(eventName);
     if ( !this.isValidName(eventName) ) return;
     this.events[eventName].isSubscribed = false;
   }
@@ -91,7 +91,7 @@ class EventEmitter {
     const isOnce = (options.hasOwnProperty('once')) ? options.once : false;
     const priority = (options.hasOwnProperty('priority')) ? options.priority : 'last';
     const id = (options.hasOwnProperty('id')) ? options.id : undefined;
-    if ( !this.hasEvent(eventName) ) this.register(eventName);
+    if ( !this.hasEvent(eventName) ) this.registerEvent(eventName);
     if ( !this.isValidName(eventName) ) return;
     return this.events[eventName].registerListener(listener, {once: isOnce, priority: priority, id: id});
   }
@@ -120,7 +120,7 @@ class EventEmitter {
    * @param {String} eventName 
    */
   dispatchEvent(eventName, ...args) {
-    if ( !this.hasEvent(eventName) ) this.register(eventName);
+    if ( !this.hasEvent(eventName) ) this.registerEvent(eventName);
     if ( this.isEventsEnabled ) {
       const event = this.events[eventName];
       event.runListeners(...args);

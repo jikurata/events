@@ -141,16 +141,6 @@ class EventEmitter {
   getEvent(name) {
     return this._events[name];
   }
-
-  isValidEventName(eventName) {
-    try {
-      EventError.InvalidEventName.throwCheck(eventName);
-      return true;
-    }
-    catch(err) {
-      return false;
-    }
-  }
 }
 
 module.exports = EventEmitter;

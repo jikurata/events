@@ -1,4 +1,4 @@
-# events v2.6.0
+# events v3.0.0
 Lightweight javascript event listening library
 ---
 ## Install
@@ -24,110 +24,110 @@ emitter.on('val', (val1, val2) => {
 
 emitter.emit('val', 3, 5); // I have 3 and 5;
 ```
-Make an instance of EventEmitter available globally
+Asynchronous Listeners are OK
 ```
-const firstEmitter = new EventEmitter({id: 'foo'});
-const secondEmitter = EventEmitter.instanceOf('foo');
-const thirdEmitter = new EventEmitter({id: 'foo'});
-const localEmitter = new EventEmitter();
+emitter.on('event', () => {
+  // Synchronous Code
+});
 
-firstEmitter.on('bar', () => console.log('foobar'));
-localEmitter.on('bar', () => console.log('not foo'));
-secondEmitter.emit('bar');  // foobar
-thirdEmitter.emit('bar');   // foobar
-localEmitter.emit('bar');   // not foo
+// EventListener should return a Promise so it can be handled asynchronously
+emitter.on('event', () => new Promise((resolve, reject) => {
+  // Asynchronous code
+  resolve();
+}));
+
+emitter.emit('event')
+.then(() => {
+  // Do something after all listeners have finished
+})
+
+```
+Any errors thrown by EventListeners are caught by the EventEmitter and passed to the 'error' event
+```
+emitter.on('error', (err) => {
+  // Do something with an error
+});
+
+emitter.on('event', () => {
+  throw new Error('woops');
+})
+
+emitter.emit('event')
+.then(() => {
+  // This code still runs
+})
 ```
 ## Documentation
 ---
-**Class** EventEmitter(*EventEmitterOptions*)
-#### Properties
-- **id**: *String* Defines the EventEmitter at the global scope. When id is a falsy value, that instance of EventEmitter will not be available.
-- **events**: Object containing all Events registered by the EventEmitter. Object keys are the event names.
-- **isEnabled**: *Boolean*. When disabled, the emitter will suppress all emits. Registering and unregistering events will still occur regardless of this property.
-#### Methods
-- **register**(*eventName*)<br>
-  *Arguments*:<br>
-    {*String*} eventName: The name of the *Event* to be registered<br>
-  *Description*:<br>
-    Registers an *Event* with the name *eventName*<br>
+### **Class** EventEmitter() ###
+#### Methods ####
+#### **registerEvent**(*eventName*) ####
+- Arguments:
+  - eventName {String}: The name of the *Event* to be registered
 
-- **unregister**(*eventName*)<br>
-  *Arguments*:<br>
-    {*String*} eventName<br>
-  *Description*:<br>
-    Removes the Event object with the name *eventName*<br>
-
-- **subscribe**(*eventName*)<br>
-  *Arguments*:<br>
-    {*String*} eventName<br>
-  *Description*:<br>
-    Sets the Event's isActive property to true.<br>
-    Registered events are subscribed to by default.<br>
-
-- **unsubscribe**(*eventName*)<br>
-  *Arguments*:<br>
-    {*String*} eventName<br>
-  *Description*:<br>
-    Sets the Event's isActive property to false.<br>
-    If the event does not exist yet, it will register the event and then unsubscribe from it.<br>
-
-- **enable**()<br>
-  *Description*:<br>
-    Toggles isEnabled to be true<br>
-
-- **disable**()<br>
-  *Description*:<br>
-    Toggles isEnabled to be false<br>
-
-- **addEventListener**(*eventName*, *listener*, *options*)<br>
-  *Arguments*:<br>
-    {*String*} eventName<br>
-    {*Function*} listener: A function to be called when the *Event* is triggered<br>
-    {*EventListenerOptions*} options (Optional):<br>
-  *Description*:<br>
-    Registers the event if it does not exist yet, and adds the listener to the *Event* object.<br>
-    Returns the id of the assigned listener.<br>
+#### **unregisterEvent**(*eventName*) ####
+- Arguments:
+  - eventName {String}
 
 
-- **on**(*eventName*, *listener*, *options*)<br>
-  *Description*: Wrapper for addEventListener. Passes {once: false} as the option.<br>
+#### **addEventListener**(*eventName*, *listener*, *options*) ####
+- Arguments:
+  - eventName {String}
+    listener {Function}: A function to be called when the *Event* is triggered
+    options {*EventListenerOptions*}: Configuration for the *EventListener*
+- Description:
+  - Registers the event if it does not exist yet, and adds the listener to the *Event* object. Returns the id of the assigned listener.
 
-- **once**(*eventName*, *listener*)<br>
-  *Description*: Wrapper for addEventListener. Passes {once: true} as the option.<br>
 
-- **dispatchEvent**(*eventName*, *...args*)<br>
-  *Arguments*:<br>
-    {*String*} eventName<br>
-    {*any*} arg1, arg2, argN...: Arguments to be passed into the *Event*'s *EventListeners*<br>
-  *Description*:<br>
-    Triggers the event, calls all of the listeners assigned to the *Event*.<br>
+#### **on**(*eventName*, *listener*, *options*) ####
+- Description:
+  - Wrapper for addEventListener.
 
-- **emit**(*eventName*, *...args*)<br>
-  *Description*:<br>
-    Wrapper for dispatchEvent. Exists for semantic purposes.<br>
+#### **once**(*eventName*, *listener*) ####
+- Description: 
+  - Wrapper for addEventListener. Passes {once: true} as the option.
 
-- **removeEventListener**(*eventName*, *id*)<br>
-  *Arguments*:<br>
-    {*String*} eventName<br>
-    {*String*} id: The id of the *EventListener*<br>
-  *Description*:<br>
-    Removes a listener from the specified *Event*<br>
-    
-**Object** *EventEmitterOptions*<br>
-  - id {*String*} (*Default: ''*): *Optional*. When id is a truthy value, the EventEmitter will be available globally.<br>
-  - enable {*Boolean*} (*Default: true*): *Optional*. Sets the initial state of the EventEmitter.
+#### **dispatchEvent**(*eventName*, *...args*) ####
+- Arguments:
+  - eventName {String}
+  - ...args {...Any}: Any arguments to pass to the event's EventListeners
+- Description:
+  - Triggers the event, calls all of the listeners assigned to the *Event*.
 
-**Object** *EventOptions*<br>
-  - persist {*String*} (*Default: false*): *Optional*. Immediately emit the current event state to any newly registered listeners.<br>
-  - subscribe {*Boolean*} (*Default: true*): *Optional*. When emitted, the event will execute its listeners.<br>
-  - limit {*Number*} (*Default: null (No limit)*): *Optional*. Restrict the event's listener pool size
+#### **emit**(*eventName*, *...args*) ####
+- Description:
+  - Wrapper for dispatchEvent.
 
-**Object** *EventListenerOptions*<br>
-  -  id: {*String*}: Defines the id of the EventListener<br>
-  -  once: {*Boolean*} (*Default: false*): Tells the EventEmitter to call the listener only once<br>
-  -  priority: {*String*}: Setting this property to **'first'** will add the listener to the front of the queue. Default behavior adds listeners to the end.
+#### **removeEventListener**(*eventName*, *id*) ####
+- Arguments:
+  - eventName {String}
+  - id {String}: the id of the listener
+- Description:
+  - Removes a listener from the specified *Event*.
+---
+### **Object** *EventOptions* ###
+#### Properties ####
+  - persist {String}: (Default: false). When true and the event has been emitted at least once, the event will immediately execute any newly registered listeners
+  - limit {Number}: (Default: 0 (No limit)): Restrict the event's listener pool size
+---
+### **Object** *EventListenerOptions* ###
+#### Properties ####
+  -  id {String}: Manually define the id of the EventListener
+  -  once {Boolean}: (Default: false) Instructs the EventEmitter to call the listener only once
+  -  priority {String}: (Default: 'last') Setting this property to 'first' will add the listener to the front of the queue. 
 ## Version Log
 ---
+**v3.0.0**
+- Implemented support for asynchronous EventListeners
+- Emitting an event now returns a promise that resolves after all listeners have finished
+- Errors thrown by listeners are passed to the 'error' event
+- Implemented module specific errors for improved debugging
+- Removed previous implementations:
+  1. EventEmitter no longer has an enable/disable state.
+  2. Events no longer have a subscribe/unsubscribe state.
+- TODO: Expand upon module specific errors
+
+
 **v2.5.4**
 - Refactor tests to Taste tests
 
@@ -155,15 +155,15 @@ localEmitter.emit('bar');   // not foo
 - Implement option to define the handler id.
 
 **v2.3.3**
-- EventEmitter can now be set as a global reference by providing an id in its constructor.<br>
+- EventEmitter can now be set as a global reference by providing an id in its constructor.
 
 **v2.3.2**
-- Implemented *isEnabled* property for EventEmitter. When isEnabled is falsy, EventEmitter will suppress all emits. Registering and unregistering events will still occur regardless of this setting.<br>
+- Implemented *isEnabled* property for EventEmitter. When isEnabled is falsy, EventEmitter will suppress all emits. Registering and unregistering events will still occur regardless of this setting.
 
 **v2.3.1**
-- An issue where certain EventEmitter methods would throw an error when passed an invalid event name has been fixed.<br>
+- An issue where certain EventEmitter methods would throw an error when passed an invalid event name has been fixed.
 
 **v2.3.0**
 - Event objects now have the property *isActive* to determine whether an Event should execute its handlers or not. This property is set to true by default.
 - The EventEmitter can toggle an Event's *isActive* property by using the *subscribe*() and *unsubscribe*() methods.
-- The EventEmitter can now kill Events using the *unregister*() method. This will remove an Event, along with all of its handlers.<br>
+- The EventEmitter can now kill Events using the *unregister*() method. This will remove an Event, along with all of its handlers.

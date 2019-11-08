@@ -26,20 +26,21 @@ class EventListener {
    * Executes the handler as a function and passes any arguments into
    * the handler
    * @param  {...any} args
-   * @returns {Promise:Void}
+   * @returns {Promise<Void>}
    */
-  run() {
+  run(...args) {
     return new Promise((resolve, reject) => {
       if ( this.isDeleted ) {
         return resolve();
       };
+      
       // Toggle handler for deletion after being executed when set to occur once
       if ( this.isOnce ) {
         this._IS_DELETED = true;
       }
 
       // Pass any arguments into the handler function
-      const returnValue = this.handler.apply(null, arguments);
+      const returnValue = this.handler(...args);
       if ( returnValue instanceof Promise ) {
         // If the handler returns a Promise, wait for it to complete
         returnValue

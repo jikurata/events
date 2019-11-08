@@ -2,7 +2,7 @@
 const Taste = require('@jikurata/taste');
 const EventEmitter = require('../src/EventEmitter.js');
 const Event = require('../src/Event.js');
-const EventError = require('../src/Error.js');
+const EventError = require('../src/EventError.js');
 
 const test = new Promise((resolve, reject) => {
   Taste.flavor('Throwing InvalidListener')
@@ -90,7 +90,7 @@ const test = new Promise((resolve, reject) => {
       emitter.on(undefined, () => {});
     }
     catch(err) {}
-    profile.eventCount = Object.keys(emitter.events).length;
+    profile.eventCount = Object.keys(emitter._events).filter(e => e.name === 'error').length;
   })
   .expect('eventCount').toEqual(0);
 });

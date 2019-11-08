@@ -31,22 +31,46 @@ class Event {
     });
   }
 
-  runListeners(...args) {
+  /**
+   * Runs the listeners provided as an argument
+   * Any errors thrown by a listener are safely caught and resolved 
+   * @param {Array<EventListener>} listeners 
+   * @param  {...any} args 
+   * @returns {Promise<Array<Error>>}
+   */
+  run(listeners, ...args) {
+    // Update event state
     this.state.EMITTED_ONCE = true;
-
-    const temp = [];
     this.state.PREVIOUS_ARGS = args || [];
     
-    for ( let i = 0; i < this.listeners.length; ++i ) {
-      const listener = this.listeners[i];
-      if ( listener instanceof EventListener ) {
-        listener.run(...args);
-        if ( !listener.isDeleted ) temp.push(listener);
-      }
+    const promises = [];
+    // Execute each listener on the event
+    for ( let i = 0; i < listeners.length; ++i ) {
+      const promise = new Promise((resolveListener, rejectListener) => {
+        listeners[i].run(...args)
+        .then(() => resolveListener())
+        .catch(err => resolveListener(err));
+      });
+      promises.push(promise);
     }
-    
-    this.listeners.length = 0;
-    temp.forEach(listener => this.listeners.push(listener));
+
+    return Promise.all(promises)
+    .then(errors => {
+      // Check for any listeners set to be deleted once resolved
+      this.removeListener();
+      return errors;
+    });
+  }
+
+  /**
+   * Wrapper for event's run method
+   * Executes all listeners on the event
+   * @param {...any} args
+   * @returns {Promise<Array<Error>>}
+   */
+  runListeners(...args) {
+    const listeners = [].concat(this.listeners);
+    return this.run(listeners, ...args);
   }
 
   /**
@@ -60,35 +84,48 @@ class Event {
    *    'priority': {String} 'first' || 'last': Determine whether to add the listener
    *                to the front or end of the queue
    */
-  registerListener(f, options = {isOnce: false}) {
+  registerListener(f, options = {once: false}) {
     // Throw if invalidated
     EventError.ExceedsMaxListeners.throwCheck(this);
 
-    const isOnce = (options.isOnce) ? options.isOnce : (options.once) ? options.once : false;
+    const isOnce = (options.once) ? options.once : false;
     const id = (options.hasOwnProperty('id')) ? options.id : `${this.listeners.length}-${Date.now()}`;
     const listener = new EventListener(id, f, isOnce);
 
     if ( options.priority === 'first' ) this.listeners.unshift(listener);
     else this.listeners.push(listener);
     // Run the listener with the previous event state when persisting
-    if ( this.isPersisted &&  this.hasEmittedAtLeastOnce ) listener.run(...this.state.PREVIOUS_ARGS);
+    if ( this.isPersisted && this.hasEmittedAtLeastOnce ) {
+      this.run([listener], ...this.state.PREVIOUS_ARGS);
+    }
     return id;
   }
 
   /**
-   * Removes the listener with the corresponding id
-   * @param {String} id 
+   * Removes listeners with a matching id
+   * When the argument is undefined, it will search for listeners set to be deleted still
+   * @param {String|Array<String>} id 
    */
   removeListener(id) {
-    let index = -1;
-    for ( let i = 0; i < this.listeners.length; ++i ) {
-      if ( id === this.listeners[i].id ) {
-        index = i;
-        break;
-      };
+    if ( !Array.isArray(id) ) {
+      id = [id];
     }
-    if ( index !== -1 ) return this.listeners.splice(index, 1)[0];
-    return undefined;
+
+    const temp = [];
+    const listeners = [].concat(this.listeners);
+    for (let i = 0; i < listeners.length; ++i ) {
+      const listener = listeners[i];
+      if ( !listener.isDeleted && id.indexOf(listener.id) === -1 ) {
+        temp.push(listener);
+      }
+    }
+    // Replace the current set of listeners with the new set
+    if ( temp.length !== listeners.length ) {
+      this.listeners.length = 0;
+      for ( let i = 0; i < temp.length; ++i ) {
+        this.listeners.push(temp[i]);
+      }
+    }
   }
 
   get maxListenerCount() {

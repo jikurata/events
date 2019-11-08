@@ -3,32 +3,22 @@ const Taste = require('@jikurata/taste');
 const EventEmitter = require('../src/EventEmitter.js');
 
 const test = new Promise((resolve, reject) => {
-  Taste.flavor('Global EventEmitters')
-  .describe('Passing an id to the emitter will make its reference global')
-  .test(profile => {
-    const emitter = new EventEmitter({id: 'foo'});
-    const secondEmitter = EventEmitter.instanceOf('foo');
-    emitter.on('bar', () => console.log('foobar'));
-    profile.emitterIsGlobal = secondEmitter.events.hasEvent('foo');
-  })
-  .expect('emitterIsGlobal').toBeTruthy();
-  
-  Taste.flavor('Local EventEmitters do not interfere with global emitters')
-  .test(profile => {
-    const globalEmitter = new EventEmitter({id: 'foo'});
-    const localEmitter = new EventEmitter();
-    globalEmitter.register('foobar');
-    profile.notTheSame = localEmitter.hasEvent('foobar');
-  })
-  .expect('notTheSame').toBeFalsy();
-
   Taste.flavor('Register Events')
   .test(profile => {
     const emitter = new EventEmitter();
-    emitter.register('foo');
+    emitter.registerEvent('foo');
     profile.hasEvent = emitter.hasEvent('foo');
   })
   .expect('hasEvent').toBeTruthy();
+
+  Taste.flavor('Unregister an event from EventEmitter')
+  .test(profile => {
+    const emitter = new EventEmitter();
+    emitter.registerEvent('foo');
+    emitter.unregisterEvent('foo');
+    profile.hasEvent = emitter.hasEvent('foo');
+  })
+  .expect('hasEvent').toBeFalsy();
   
   Taste.flavor('Emitting arguments with an event')
   .test(profile => {
@@ -47,38 +37,39 @@ const test = new Promise((resolve, reject) => {
   .expect('bar').toEqual('bar')
   .expect('baz').toEqual('baz');
 
-  Taste.flavor('Unsubscribe from an event')
-  .describe('Disables emitting of the event')
+  Taste.flavor('Emitting an event resolves when all listeners finish')
   .test(profile => {
     const emitter = new EventEmitter();
-    emitter.register('foo');
-    emitter.unsubscribe('foo');
-    profile.isSubscribed = emitter.events['foo'].isSubscribed;
-  })
-  .expect('isSubscribed').toBeFalsy();
-
-  Taste.flavor('Unregister an event from EventEmitter')
-  .test(profile => {
-    const emitter = new EventEmitter();
-    emitter.register('foo');
-    emitter.unregister('foo');
-    profile.hasEvent = emitter.hasEvent('foo');
-  })
-  .expect('hasEvent').toBeFalsy();
-
-  Taste.flavor('Disable an EventEmitter')
-  .describe('Does not emit any events when disabled')
-  .test(profile => {
-    const emitter = new EventEmitter();
-    let valueShouldNotChange = 1;
+    emitter.on('foo', () => {});
     emitter.on('foo', () => {
-      valueShouldNotChange = 0;
+      setTimeout(() => {}, 500);
     });
-    emitter.disable();
-    emitter.emit('foo');
-    profile.value = valueShouldNotChange;
+    emitter.emit('foo')
+    .then(() => {
+      profile.promiseResolved = true;
+    })
   })
-  .expect('value').toEqual(1);
+  .expect('promiseResolved').toBeTruthy();
+
+  Taste.flavor('Thrown errors from listeners are emitted to the error event')
+  .test(profile => {
+    const emitter = new EventEmitter();
+    let errorCount = 0;
+    emitter.on('foo', () => {
+      throw new Error('error 1');
+    });
+    emitter.on('foo', () => {
+      throw new Error('error 2');
+    });
+    emitter.on('error', (err) => {
+      errorCount++;
+    })
+    emitter.emit('foo')
+    .then(() => {
+      profile.errorCount = errorCount;
+    })
+  })
+  .expect('errorCount').toEqual(2);
 
   resolve();
 });

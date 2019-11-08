@@ -58,12 +58,44 @@ const test = new Promise((resolve, reject) => {
     event.registerListener(() => foo = false);
     event.registerListener(() => bar = 42);
     event.runListeners();
-
     profile.foo = foo;
     profile.bar = bar;
   })
   .expect('foo').toEqual(false)
   .expect('bar').toEqual(42);
+
+  Taste.flavor('Event returns a promise that resolves when listeners finish')
+  .test(profile => {
+    const event = new Event('some-event');
+    let foo = true;
+    event.registerListener(() => foo = false);
+    event.registerListener(() => new Promise((resolve, reject) => {
+      setTimeout(() => {
+        foo = 42;
+        resolve();
+      }, 500);
+    }));
+    event.runListeners()
+    .then(() => {
+      profile.foo = foo;
+    });
+  })
+  .expect('foo').toEqual(42);
+
+  Taste.flavor('Event catches thrown errors by listeners')
+  .test(profile => {
+    const event = new Event('some-event');
+    event.registerListener(() => {});
+    event.registerListener(() => { throw new Error('bar')});
+    event.runListeners()
+    .then(errors => {
+      profile.errorCaught = true;
+    })
+    .catch(err => {
+      profile.errorCaught = false;
+    });
+  })
+  .expect('errorCaught').toBeTruthy();
 
   Taste.flavor('Event persistence')
   .describe('Persisted events will immediately execute newly registered listeners if the event has been emitted at least once')
@@ -78,25 +110,30 @@ const test = new Promise((resolve, reject) => {
   .expect('val').toBeFalsy();
 
   Taste.flavor('Listening to an event only once')
-  .describe('Listener is deleted if a listener is invoked and options.isOnce: true')
+  .describe('Listener is deleted if a listener is invoked and options.once: true')
   .test(profile => {
     const event = new Event('foo');
-    event.registerListener(() => {}, {isOnce: true});
-    event.runListeners();
-    profile.listenerCount = event.listeners.length;
+    event.registerListener(() => {}, {once: true});
+    event.runListeners()
+    .then(() => {
+      profile.listenerCount = event.listeners.length;
+    })
+    .catch(err => {
+      profile.listenerCount = false;
+    })
   })
   .expect('listenerCount').toEqual(0);
 
   Taste.flavor('Limiting maximum listeners on an Event')
   .test(profile => {
     const event = new Event('foo');
-    event.setMaxListenerCount = 3;
+    event.maxListenerCount = 3;
     event.registerListener(() => {});
     event.registerListener(() => {});
     event.registerListener(() => {});
-    let e = null;
     try {
       event.registerListener(() => {});
+      profile.exceedLimit = false;
     }
     catch(err) {
       profile.exceedLimit = true;

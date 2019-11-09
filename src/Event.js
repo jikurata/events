@@ -43,22 +43,28 @@ class Event {
     this.state.EMITTED_ONCE = true;
     this.state.PREVIOUS_ARGS = args || [];
     
+    const errors = [];
     const promises = [];
     // Execute each listener on the event
     for ( let i = 0; i < listeners.length; ++i ) {
       const promise = new Promise((resolveListener, rejectListener) => {
         listeners[i].run(...args)
         .then(() => resolveListener())
-        .catch(err => resolveListener(err));
-      });
+        .catch(err => {
+          errors.push(err);
+          resolveListener();
+        });
+      })
       promises.push(promise);
     }
 
     return Promise.all(promises)
-    .then(errors => {
+    .then(() => {
       // Check for any listeners set to be deleted once resolved
       this.removeListener();
-      return errors;
+      
+      // If listeners threw any errors, pass them down the promise chain
+      return (errors.length) ? errors : undefined;
     });
   }
 

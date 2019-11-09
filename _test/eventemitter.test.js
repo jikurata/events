@@ -54,19 +54,16 @@ const test = new Promise((resolve, reject) => {
   Taste.flavor('Thrown errors from listeners are emitted to the error event')
   .test(profile => {
     const emitter = new EventEmitter();
-    let errorCount = 0;
     emitter.on('foo', () => {
       throw new Error('error 1');
     });
     emitter.on('foo', () => {
       throw new Error('error 2');
     });
-    emitter.on('error', (err) => {
-      errorCount++;
-    })
+
     emitter.emit('foo')
-    .then(() => {
-      profile.errorCount = errorCount;
+    .then(errors => {
+      profile.errorCount = errors.length;
     })
   })
   .expect('errorCount').toEqual(2);

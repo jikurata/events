@@ -96,13 +96,13 @@ class EventEmitter {
       if ( event ) {
         event.runListeners(...args)
         .then(errors => {
-          for ( let i = 0; i < errors.length; ++i ) {
+          if ( errors ) {
             // Emit any errors that the listeners threw
-            if ( errors[i] ) {
+            for ( let i = 0; i < errors.length; ++i ) {
               this.emit('error', errors[i]);
             }
           }
-          return resolve();
+          return resolve(errors);
         })
         .catch(err => reject(err)); // Throw any unexpected errors
       }
@@ -112,6 +112,7 @@ class EventEmitter {
         return resolve();
       }
     })
+    .catch(err => this.emit('error', err));
   }
 
   /**

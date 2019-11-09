@@ -1,4 +1,4 @@
-# events v3.0.0
+# events v3.0.1
 Lightweight javascript event listening library
 ---
 ## Install
@@ -53,7 +53,7 @@ emitter.on('event', () => {
 })
 
 emitter.emit('event')
-.then(() => {
+.then(errors => {
   // This code still runs
 })
 ```
@@ -117,6 +117,9 @@ emitter.emit('event')
   -  priority {String}: (Default: 'last') Setting this property to 'first' will add the listener to the front of the queue. 
 ## Version Log
 ---
+**v3.0.1**
+- Emitting an event now passes any errors that occur its listeners down its promise chain
+
 **v3.0.0**
 - Implemented support for asynchronous EventListeners
 - Emitting an event now returns a promise that resolves after all listeners have finished

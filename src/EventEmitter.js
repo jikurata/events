@@ -99,7 +99,7 @@ class EventEmitter {
           if ( errors ) {
             // Emit any errors that the listeners threw
             for ( let i = 0; i < errors.length; ++i ) {
-              this.emit('error', errors[i]);
+              this.dispatchEvent('error', errors[i]);
             }
           }
           return resolve(errors);
@@ -112,7 +112,7 @@ class EventEmitter {
         return resolve();
       }
     })
-    .catch(err => this.emit('error', err));
+    .catch(err => this.dispatchEvent('error', err));
   }
 
   /**

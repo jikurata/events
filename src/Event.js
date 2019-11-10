@@ -2,6 +2,7 @@
 const EventListener = require('./EventListener.js');
 const EventError = require('./EventError.js');
 
+// TODO: Refactor listener execution resolution logic to Event from EventEmitter
 class Event {
   constructor(name, param = {}) {
     EventError.InvalidEventName.throwCheck(name);
@@ -60,8 +61,14 @@ class Event {
 
     return Promise.all(promises)
     .then(() => {
+      
+      // TODO: Figure out an algorithm that allows for safe deletion of listeners
+      // Without creating race conditions between overwriting the array of listeners
+      // and iterating through that array in a situation where an event is being
+      // called many times in a short period of time
+
       // Check for any listeners set to be deleted once resolved
-      this.removeListener();
+      // this.removeListener();
       
       // If listeners threw any errors, pass them down the promise chain
       return (errors.length) ? errors : undefined;
@@ -100,6 +107,7 @@ class Event {
 
     if ( options.priority === 'first' ) this.listeners.unshift(listener);
     else this.listeners.push(listener);
+
     // Run the listener with the previous event state when persisting
     if ( this.isPersisted && this.hasEmittedAtLeastOnce ) {
       this.run([listener], ...this.state.PREVIOUS_ARGS);

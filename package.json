@@ -1,6 +1,6 @@
 {
   "name": "@jikurata/events",
-  "version": "3.0.1",
+  "version": "3.0.2",
   "description": "Lightweight event listening library",
   "repository": "https://github.com/jikurata/events",
   "main": "index.js",

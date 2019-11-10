@@ -113,16 +113,13 @@ const test = new Promise((resolve, reject) => {
   .describe('Listener is deleted if a listener is invoked and options.once: true')
   .test(profile => {
     const event = new Event('foo');
-    event.registerListener(() => {}, {once: true});
+    let counter = 0;
+    event.registerListener(() => ++counter, {once: true});
     event.runListeners()
-    .then(() => {
-      profile.listenerCount = event.listeners.length;
-    })
-    .catch(err => {
-      profile.listenerCount = false;
-    })
+    .then(() => event.runListeners())
+    .then(() => profile.counter = counter);
   })
-  .expect('listenerCount').toEqual(0);
+  .expect('counter').toEqual(1);
 
   Taste.flavor('Limiting maximum listeners on an Event')
   .test(profile => {
@@ -140,7 +137,7 @@ const test = new Promise((resolve, reject) => {
     }
   })
   .expect('exceedLimit').toBeTruthy();
-  
+
   resolve();
 });
 

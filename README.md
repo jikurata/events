@@ -1,4 +1,4 @@
-# events v3.0.1
+# events v3.0.2
 Lightweight javascript event listening library
 ---
 ## Install
@@ -117,6 +117,11 @@ emitter.emit('event')
   -  priority {String}: (Default: 'last') Setting this property to 'first' will add the listener to the front of the queue. 
 ## Version Log
 ---
+**v3.0.2**
+- Listener clean up has been removed from the event call stack
+  - A serious issue has been found in situations where rapid event emits and usage of once-listeners with normal listeners were resulting in race conditions when iterating through the listener queue.
+  - For the time being, a temporary solution has been implemented: listeners will be marked as deleted, but not actually dereferenced in the listener queue. Any listeners marked as deleted will resolve immediately instead of executing its handler.
+
 **v3.0.1**
 - Emitting an event now passes any errors that occur its listeners down its promise chain
 

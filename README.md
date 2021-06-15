@@ -1,4 +1,4 @@
-# events v3.0.2
+# events v4.0.0
 Lightweight javascript event listening library
 ---
 ## Install
@@ -24,38 +24,17 @@ emitter.on('val', (val1, val2) => {
 
 emitter.emit('val', 3, 5); // I have 3 and 5;
 ```
-Asynchronous Listeners are OK
-```
-emitter.on('event', () => {
-  // Synchronous Code
-});
-
-// EventListener should return a Promise so it can be handled asynchronously
-emitter.on('event', () => new Promise((resolve, reject) => {
-  // Asynchronous code
-  resolve();
-}));
-
-emitter.emit('event')
-.then(() => {
-  // Do something after all listeners have finished
-})
-
-```
 Any errors thrown by EventListeners are caught by the EventEmitter and passed to the 'error' event
 ```
 emitter.on('error', (err) => {
-  // Do something with an error
+  console.error(err);
 });
 
 emitter.on('event', () => {
   throw new Error('woops');
 })
 
-emitter.emit('event')
-.then(errors => {
-  // This code still runs
-})
+emitter.emit('event') // woops
 ```
 ## Documentation
 ---
@@ -87,13 +66,6 @@ emitter.emit('event')
 - Description: 
   - Wrapper for addEventListener. Passes {once: true} as the option.
 
-#### **dispatchEvent**(*eventName*, *...args*) ####
-- Arguments:
-  - eventName {String}
-  - ...args {...Any}: Any arguments to pass to the event's EventListeners
-- Description:
-  - Triggers the event, calls all of the listeners assigned to the *Event*.
-
 #### **emit**(*eventName*, *...args*) ####
 - Description:
   - Wrapper for dispatchEvent.
@@ -114,9 +86,13 @@ emitter.emit('event')
 #### Properties ####
   -  id {String}: Manually define the id of the EventListener
   -  once {Boolean}: (Default: false) Instructs the EventEmitter to call the listener only once
-  -  priority {String}: (Default: 'last') Setting this property to 'first' will add the listener to the front of the queue. 
+
 ## Version Log
 ---
+**v4.0.0**
+- After giving it some thought, I decided that the Emitter should not know whether a listener executes asynchronous code. Async code should be handled externally.
+- Emitting events no longer returns a Promise.
+
 **v3.0.2**
 - Listener clean up has been removed from the event call stack
   - A serious issue has been found in situations where rapid event emits and usage of once-listeners with normal listeners were resulting in race conditions when iterating through the listener queue.

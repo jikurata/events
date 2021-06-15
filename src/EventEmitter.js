@@ -25,9 +25,10 @@ class EventEmitter {
    *      Default: 0 (No limit)
    */
   registerEvent(eventName, options = {}) {
-    if ( this.hasEvent(eventName) ) return;
-    const event = new Event(eventName, options);
-    this._events[eventName] = event;
+    if ( this.hasEvent(eventName) ) {
+      return;
+    }
+    this._events[eventName] = new Event(eventName, options);
   }
 
   /**
@@ -35,7 +36,9 @@ class EventEmitter {
    * @param {String} eventName 
    */
   unregisterEvent(eventName) {
-    if ( !this.hasEvent(eventName) ) return;
+    if ( !this.hasEvent(eventName) ) {
+      return;
+    }
     delete this._events[eventName];
   }
 
@@ -48,16 +51,15 @@ class EventEmitter {
    *  EventListenerOptions properties:
    *    'id': {String} Sets the specified id to the listener
    *    'once': {Boolean} Sets the listener to activate only once
-   *    'priority': {String} 'first' || 'last': Determine whether to add the listener
-   *                to the front or end of the queue (Default: 'last')
    */
-  addEventListener(eventName, listener, options = {once: false, priority: 'last'}) {
+  addEventListener(eventName, listener, options = {once: false}) {
     const isOnce = (options.hasOwnProperty('once')) ? options.once : false;
-    const priority = (options.hasOwnProperty('priority')) ? options.priority : 'last';
     const id = (options.hasOwnProperty('id')) ? options.id : undefined;
-    if ( !this.hasEvent(eventName) ) this.registerEvent(eventName);
     try {
-      this.getEvent(eventName).registerListener(listener, {once: isOnce, priority: priority, id: id});
+      if ( !this.hasEvent(eventName) ) {
+        this.registerEvent(eventName);
+      }
+      this.getEvent(eventName).registerListener(listener, {once: isOnce, id: id});
     }
     catch (err) {
       this.emit('error', err);
@@ -87,41 +89,18 @@ class EventEmitter {
    * Trigger an event and its listeners
    * @param {String} eventName 
    * @param {...Any} args
-   * @returns {Promise<Void>}
-   */
-  dispatchEvent(eventName, ...args) {
-    return new Promise((resolve, reject) => {
-      const event = this.getEvent(eventName);
-
-      if ( event ) {
-        event.runListeners(...args)
-        .then(errors => {
-          if ( errors ) {
-            // Emit any errors that the listeners threw
-            for ( let i = 0; i < errors.length; ++i ) {
-              this.dispatchEvent('error', errors[i]);
-            }
-          }
-          return resolve(errors);
-        })
-        .catch(err => reject(err)); // Throw any unexpected errors
-      }
-      else {
-        // Register the event if it does not exist
-        this.registerEvent(eventName);
-        return resolve();
-      }
-    })
-    .catch(err => this.dispatchEvent('error', err));
-  }
-
-  /**
-   * Wrapper for dispatchEvent
-   * @param {String} eventName 
-   * @param {...Any} args
    */
   emit(eventName, ...args) {
-    return this.dispatchEvent(eventName, ...args);
+    try {
+      if ( !this.hasEvent(eventName) ) {
+        this.registerEvent(eventName);
+      }
+      const event = this.getEvent(eventName);
+      event.handle(...args);
+    }
+    catch(err) {
+      return this.emit('error', err);
+    }
   }
 
   /**
@@ -131,12 +110,14 @@ class EventEmitter {
    * @param {String} id 
    */
   removeEventListener(eventName, id) {
-    if ( !this.hasEvent(eventName) ) return;
+    if ( !this.hasEvent(eventName) ) {
+      return;
+    }
     return this.getEvent(eventName).removeListener(id);
   }
 
   hasEvent(eventName) {
-    return this._events.hasOwnProperty(eventName);
+    return !!this._events.hasOwnProperty(eventName);
   }
 
   getEvent(name) {

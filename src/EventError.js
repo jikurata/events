@@ -31,7 +31,7 @@ class ExceedsMaxListeners extends Error {
 
   static throwCheck(event) {
     // If the event's maximum listeners is set to 0 or any falsy value, then it has no limit
-    if ( event.maxListenerCount > 0 && event.listeners.length >= event.maxListenerCount ) {
+    if ( event.maxListenerCount > 0 && Object.keys(event.listeners).length >= event.maxListenerCount ) {
       throw new ExceedsMaxListeners(event);
     }
   }

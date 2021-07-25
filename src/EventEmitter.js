@@ -59,7 +59,7 @@ class EventEmitter {
       if ( !this.hasEvent(eventName) ) {
         this.registerEvent(eventName);
       }
-      this.getEvent(eventName).registerListener(listener, {once: isOnce, id: id});
+      return this.getEvent(eventName).registerListener(listener, {once: isOnce, id: id});
     }
     catch (err) {
       this.emit('error', err);

@@ -52,4 +52,12 @@ Taste('Thrown errors from listeners are emitted to the error event')
 })
 .expect('errorEmitted').toBeTruthy();
 
+Taste('Emitter will generate an id if one is not provided for a listener')
+.test(profile => {
+  const emitter = new EventEmitter();
+  profile.idValue = emitter.on('foo', () => {}, {id: null});
+})
+.expect('idValue').toBeTypeOf('string')
+.expect('idValue').toBeTruthy();
+
 module.exports = Taste;

@@ -67,7 +67,7 @@ class Event {
     EventError.ExceedsMaxListeners.throwCheck(this);
 
     const isOnce = (options.hasOwnProperty('once')) ? options.once : false;
-    const id = (options.hasOwnProperty('id')) ? options.id : `${Object.keys(this.listeners).length}-${Date.now()}`;
+    const id = (options.hasOwnProperty('id') && options.id) ? options.id : `${Object.keys(this.listeners).length}-${Date.now()}`;
     const listener = new EventListener(id, fn, isOnce);
 
     this.listeners[id] = listener;

@@ -1,4 +1,4 @@
-# events v4.0.0
+# events v4.0.1
 Lightweight javascript event listening library
 ---
 ## Install
@@ -89,6 +89,9 @@ emitter.emit('event') // woops
 
 ## Version Log
 ---
+**v4.0.1**
+- Fixed an issue with the EventEmitter creating listeners with undefined id values.
+
 **v4.0.0**
 - After giving it some thought, I decided that the Emitter should not know whether a listener executes asynchronous code. Async code should be handled externally.
 - Emitting events no longer returns a Promise.
